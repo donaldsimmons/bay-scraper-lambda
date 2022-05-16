@@ -27,7 +27,7 @@ resource "aws_iam_policy" "bsl_iam_policy" {
       {
         Sid = "AllowCloudWatchLogs"
         Effect = "Allow"
-        Resource = "arn:aws:log:us-east-1:*:*"
+        Resource = "arn:aws:logs:us-east-1:*:log-group:*"
         Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
