@@ -1,0 +1,6 @@
+# misc 
+.DS_Store
+
+# Terraform
+*.tfvars
+.terraform*
