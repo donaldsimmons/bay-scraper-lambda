@@ -1,0 +1,30 @@
+name: Upload Main to AWS Lambda
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+    paths:
+      - 'bay-scraper-lambda.py'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Configure AWS Creds
+	uses: aws-actions/configure-aws-credentials@v1
+	with:
+          aws-region: us-east-1
+	  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+	  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Deploy Lambda Function
+	run: |
+          zip -j bay-scraper-lambda.zip ./bay-scraper-lambda.py
+       	  aws s3 sync ./bay-scraper-lambda.zip s3://${{ secrets.AWS_S3_SOURCE_BUCKET }}
+          aws lambda update-function-code --function-name=bay-scraper-lambda --s3-bucket=${{ secrets.AWS_S3_SOURCE_BUCKET }} --s3-key=bay-scraper-lambda.zip
+
